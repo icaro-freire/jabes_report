@@ -1,0 +1,540 @@
+%==============================================================================
+% Programação Linear II
+% 04/08/2021
+%==============================================================================
+
+\chapter{Programação Linear II}
+
+\section{Solução Básica} %=====================================================
+
+Seja $ A $ uma matriz $ m \times n $ de \textit{rank} $ m $ e considere o 
+sistema $ Ax = b $ de equações lineares.
+Como $ A $ tem \textit{rank} $ m $ é possível extrair de $ A $ $ m $ vetores
+coluna linearmente independentes.
+Com isto, é possível tirar os valores das $ m $ variáveis associadas a esses
+$ m $ vetores colunas em função das $ n - m $ variáveis restantes.
+
+Uma solução básica é obtida fazendo essas $ n - m $ variáveis restantes 
+assumirem o valor zero.
+
+\begin{exemplo}
+  Considere o sistema 
+  \[
+   \systeme{3x_1-2x_2+5x_3+6x_4 = 4, 2x_1+3x_2+4x_3-2x_4=6}
+  \]
+\end{exemplo}
+
+A matriz aqui é 
+$
+  \begin{bmatrix} 
+   3 & -2 & 5 & 6 \\ 
+   2 &  3 & 4 & -2
+  \end{bmatrix}
+$.
+Claro que $ A $ tem \textit{rank} 2.
+Em particular, quaisquer dois vetores coluna escolhidos em $ A $ são linearmente
+independentes.
+Escolhemos as colunas 2 e 3, o que significa que vamos tirar os valores das 
+variáveis $ x_2 $ e $ x_3 $ em termos das variáveis $ x_1 $ e $ x_2 $.
+Há diversas maneiras de se resolver, mas vamos fazer uso de inversão de matrizes,
+no caso, calculando a inversa da matriz $\begin{bmatrix} -2 & 5 \\ 3 & 4\end{bmatrix}$.
+
+A inversa\footnote{Para matrizes $ 2 \times 2 $ há uma maneira prática de se 
+calcular a inversa. 
+Se $ A = \begin{bmatrix} a & b \\ c & d\end{bmatrix} $, então a sua inversa é
+$ \dfrac{1}{ad - bc}\begin{bmatrix} d & -b \\ -c & a\end{bmatrix} $
+} é 
+$
+  \dfrac{-1}{23}
+  \begin{bmatrix} 
+    4 & -5 \\ 
+   -3 & -2
+  \end{bmatrix}
+$.
+Agora é só multiplicar todo o sistema por essa inversa.
+
+Podemos fazer o cálculo só com as matrizes para economizar tempo, mas 
+acrescentando a coluna independente, $ \begin{bmatrix} 4 \\ 6\end{bmatrix}$.
+
+{\scriptsize
+\begin{align*}
+  -\frac{1}{23} 
+  \begin{bmatrix} 
+    4 & -5 \\ 
+    &\\
+   -3 & -2
+  \end{bmatrix} 
+  \begin{bmatrix}[cccc|c]
+   3 &-2 & 5 &  6 & 4 \\
+    &&&&\\
+   2 & 3 & 4 & -2 & 6
+  \end{bmatrix}
+  &=
+  -\frac{1}{23}
+  \begin{bmatrix}[cccc|c]
+     2 & -23 &   0 &  34 & -14 \\
+     &&&&\\
+   -13 &   0 & -23 & -14 & -24
+  \end{bmatrix}\\ \\
+  &= 
+  \begin{bmatrix}[cccc|c]
+   -\frac{2}{23}  & 1 & 0 & -\frac{34}{23} & \frac{14}{23} \\
+                  &   &   &                &               \\
+    \frac{13}{23} & 0 & 1 &  \frac{14}{23} &\frac{24}{23}
+  \end{bmatrix}
+\end{align*}
+}
+
+Portanto, \systeme*{x_2 = \frac{14}{23} + \frac{2}{23}x_1+\frac{34}{23}x_4, x_3 = \frac{24}{23} + \frac{13}{23}x_1+\frac{14}{23}x_4}.
+
+Tomando $ x_1 = x_4 = 0 $, obtém-se a solução básica referente a $ x_2 $ e 
+$ x_3 $:
+
+\[
+\systeme*{x_2 = \frac{14}{23}, x_3 = \frac{24}{23}}.
+\]
+
+Em Programação Linear há um adicional a mais com relação às variáveis: elas 
+devem ser maiores ou iguais a zero.
+É uma restrição a mais que não interfere na definição de solução básica.
+Então, na linguagem  de P.L., o que se diz é que, se os valores básicos 
+encontrados são maiores ou iguais a zero, diz-se que é uma 
+\textbf{solução básica factível}.
+Caso contrário, diz-se \textbf{solução básica infactível}.
+O sistema proposto é:
+
+\[
+  Ax = b, \qquad x \geq 0.
+\]
+
+Outro detalhe importante é que uma solução básica pode ser identificada pelos
+índices das variáveis que não assumirão o valor zero.
+Essas são denominadas de \textbf{variáveis básicas}, e aquelas que assumirão o
+valor zero são denominadas de \textbf{variáveis não básicas}.
+Também são ditas que essas $ m $ variáveis básicas estão na base e as não básicas
+estão fora da base.
+Portanto, os índices das variáveis básicas, dizem quem é a solução básica.
+Mas, para completar essa identificação é necessário saber em que linha ou 
+equação está a variável básica.
+Isto impõe que os índices devem estar ordenados na mesma sequência em que as
+correspondentes variáveis aparecem nas linhas.
+Assim, o primeiro índice deve ser da variável básica que está na primeira linha,
+o segundo índice, da variável básica que está na segunda linha e assim por 
+diante.
+Dessa forma, defini-se um conjunto ordenados dos índices das variáveis básicas,
+que será denotado por $ I $; e, um outro conjunto dos índices das variáveis não
+básicas, denotado por $ J $.
+
+No exemplo dado: $ I = \{\,2, 3\,\} $ e $ J = \{\,1. 4\,\} $.
+
+De agora em diante, uma solução básica será identificada pelo conjunto $ I $.
+
+\begin{exemplo}
+  Dado o sistema 
+  \[
+   \systeme
+   {
+     x_1 + 5x_2 - x_3 =  5,
+    3x_1 + 4x_2 + x_4 = 12,
+    2x_1 +  x_2 - x_5 =  4
+   }
+  \]
+  com $ x_1, x_2, x_3, x_4, x_5 \geq 0 $ e I = \{\,2, 4, 1\,\}.
+\end{exemplo}
+
+
+Significa que foram tirados  os valores das variáveis $ x_1 $, $ x_2 $ e $ x_3 $,
+mas que a ordem em que aparecem na solução final é que $ x_2 $ está na primeira
+linha, $ x_4 $ está na segunda e $ x_1 $ está na terceira linha.
+Veja abaixo:
+
+\[
+  \systeme
+  {
+   x_2 - \frac{2}{9}x_3 + \frac{1}{9}x_5  = \frac{2}{3},
+   \frac{5}{9}x_3 + x_4 + \frac{11}{9}x_5 = \frac{13}{3},
+   x_1 + \frac{1}{9}x_3 - \frac{5}{9}x_5  = \frac{5}{3}
+  }
+\]
+
+A solução básica é: $ x_2 = \frac{2}{3} $, $ x_4 = \frac{13}{3} $ e 
+$ x_4 = \frac{5}{3} $.
+As variáveis não básicas: $ x_3 = x_5 = 0 $.
+
+A matriz dos vetores coluna extraídos da matriz \\
+
+\[ 
+  A = 
+  \begin{bmatrix} 
+   1 & 5 & -1 & 0 &  0 \\
+   3 & 4 &  0 & 1 &  0 \\
+   2 & 1 &  0 & 0 & -1
+  \end{bmatrix} 
+  \qquad
+  \text{ é }
+  \qquad
+  \begin{bmatrix}
+   5 & 0 & 1 \\
+   4 & 1 & 3 \\
+   1 & 0 & 2
+  \end{bmatrix}.
+\]
+
+Observe a ordem das colunas.
+A primeira coluna é a do $ x_2 $; a segunda coluna é a do $ x_4 $ e a terceira
+coluna é a do $ x_1 $.
+Assim, quando multiplicar a matriz estendida do sistema pela inversa de 
+$
+  \begin{bmatrix}
+   5 & 0 & 1 \\
+   4 & 1 & 3 \\
+   1 & 0 & 2
+  \end{bmatrix}
+$,
+as colunas da matriz identidade aparecerá na mesma ordem, isto é, a primeira
+coluna da matriz identidade estará na coluna do $ x_2 $, a segunda, na coluna do
+$ x_4 $ e a terceira, na coluna do $ x_1 $.
+
+Mostraremos que acontece exatamente isso.
+
+\begin{align*}
+  \begin{bmatrix}[ccc|ccc]
+   5 & 0 & 1 & 1 & 0 & 0 \\
+   4 & 1 & 3 & 0 & 1 & 0 \\
+   1 & 0 & 2 & 0 & 0 & 1
+  \end{bmatrix}
+  &\approx
+  \begin{bmatrix}[ccc|ccc]
+   1 & -1 & -2 &  1 & -1 & 0 \\
+   0 &  5 & 11 & -4 &  5 & 0 \\
+   0 &  1 &  4 & -1 &  1 & 1 
+  \end{bmatrix} \\
+  &\approx
+  \begin{bmatrix}[ccc|ccc]
+   1 & 0 &  2 &  0 & 0 &   1 \\
+   0 & 9 &  0 & -5 & 9 & -11 \\
+   0 & 0 & -9 &  1 & 0 &  -5
+  \end{bmatrix} \\
+  &\approx 
+  \begin{bmatrix}[ccc|ccc]
+   9 & 0 & 0 &  2 & 0 &  -1 \\
+   0 & 9 & 0 & -5 & 9 & -11 \\
+   0 & 0 & 9 &  1 & 0 &  -5
+  \end{bmatrix} \\
+  &\approx 
+  \begin{bmatrix}[ccc|ccc]
+   1 & 0 & 0 &  2/9 & 0 &  -1/9 \\
+   0 & 1 & 0 & -5/9 & 1 & -11/9 \\
+   0 & 0 & 1 &  1/9 & 0 &  -5/9
+  \end{bmatrix}
+\end{align*}
+
+Portanto a matriz inversa é 
+$
+  \begin{bmatrix}
+    2/9 & 0 &  -1/9 \\
+   -5/9 & 1 & -11/9 \\
+    1/9 & 0 &  -5/9
+  \end{bmatrix}
+$.
+
+Agora, vamos multiplicar essa matriz inversa pela matriz estendida dos 
+coeficientes das variáveis, isto é, $ \begin{bmatrix} A & b \end{bmatrix} $.
+
+{\scriptsize
+\[
+  \begin{bmatrix}
+    2/9 & 0 &  -1/9 \\
+   -5/9 & 1 & -11/9 \\
+    1/9 & 0 &  -5/9
+  \end{bmatrix}
+  \begin{bmatrix}[ccccc|c]
+   1 & 5 & -1 & 0 &  0 &  5 \\
+   3 & 4 &  0 & 1 &  0 & 12 \\
+   2 & 1 &  0 & 0 & -1 &  4 
+  \end{bmatrix}
+  =
+  \begin{bmatrix}[ccccc|c]
+   0 & 1 & -2/9 & 0 &  1/9 &  2/3 \\
+   0 & 0 &  5/9 & 1 & 11/9 & 11/3 \\
+   1 & 0 &  1/9 & 0 & -5/9 &  5/3
+  \end{bmatrix}
+\]
+}
+
+Note que a primeira coluna da matriz identidade é a segunda coluna da matriz
+acima; que a coluna de $ x_2 $.
+Analogamente para as outras colunas.
+
+A leitura das linhas, por exemplo, da segunda linha, é:
+\[
+  \frac{5}{9}x_3 + x_4 + \frac{11}{9}x_5 = \frac{11}{3}.
+\]
+
+Leitura dos valores básicos, lê-se direto só as variáveis básicas e seus 
+respectivos valores.
+\[
+  x_2 = \frac{2}{3}, \quad x_4 = \frac{11}{3} \quad \text{e} \quad x_1 = \frac{5}{3}.
+\]
+
+
+
+
+
+\section{Discussão da Solução Ótima} %=========================================
+
+Considere o P.L. $ \text{Min. } z = cx $ sujeito à $ Ax = b $, $ x \geq 0 $.
+
+As hipóteses são as de sempre: $ A $ é uma matriz $ m \times n $ de \textit{rank}
+$ m $.
+
+O ponto de partida é que se tenha uma solução básica factível inicial.
+
+O que vamos apresentar é o \textbf{Algorítimo Simplex Duas Fases}.
+A \textit{Fase I} é aplicada quando não se tem uma solução básica factível 
+inicial.
+A \textit{Fase II}, que é o algorítimo propriamente dito, precisa de usa solução
+básica factível inicial para começar as iterações.
+Em cada solução básica factível deve se proceder a discussão sobre se essa 
+solução é ótima ou não.
+Se não é ótima, vem a discussão se há outra solução básica que melhore o valor
+da F.O.
+Se existe, fazem-se os cálculos, procedimento para se passar à nova solução 
+básica.
+Se não há outra solução básica, diz-se que o problema tem solução ótima 
+ilimitada.
+
+\subsection{Fase I - Procedimentos} %------------------------------------------
+
+\begin{enumerate}
+	\item Abandone temporariamente a F.O. original do problema.
+ \item Na parte das restrições, acrescente uma variável artificial em cada 
+  equação em que não tenha uma variável básica factível.
+  Essas variáveis devem ser maiores ou iguais a zero.
+ \item Crie uma F.O. artificial a ser minimizada, que é constituída pela soma 
+  das variáveis artificiais que foram introduzidas nas restrições.
+ \item Monte o quado do simplex.
+ \item Prepare o quadro, isto é, transformar os coeficientes das variáveis 
+  básicas, que estão na F.O., em zero.
+ \item Comece a discussão da solução ótima.
+\end{enumerate}
+
+\begin{exemplo}
+  Considere o P.L.
+  \[
+   \begin{array}{rrcl}
+    \textrm{Max}  & z = 4x_1 + 3x_2 &      &    \\
+    \textrm{s.a.} & x_1 + 5x_2      & \geq & 5  \\
+                  & 3x_1 + 4x_2     & \leq & 12 \\ 
+                  &     2x_1 + x_2  & \geq & 4  \\ 
+                  &     x_1, x_2    & \geq & 0  
+   \end{array}
+  \]
+\end{exemplo}
+
+A primeira coisa a ser feita é passar o problema para forma padrão.
+Isto é feito acrescentando-se as variáveis de folga e de excesso, transformando
+as desigualdades em equações.
+
+\[
+  \begin{array}{rlcl}
+   \textrm{Max}  & z = 4x_1 + 3x_2 &                            &    \\
+   \textrm{s.a.} & \phantom{3}x_1 +  5x_2 - x_3  \phantom{-0x_4}  \phantom{-0x_5}  & =    & 5  \\
+                 &           3x_1 +  4x_2            \phantom{- 0x_3} + x_4 \phantom{- 0x_5}  & =    & 12 \\ 
+                 &           2x_1 +  \phantom{0}x_2  \phantom{- 0x_3}  \phantom{+0x_4} - x_5   & =    & 4  \\ 
+                 &  x_1, x_2, x_3, x_4, x_5 \geq 0                    &  &   
+  \end{array}
+\]
+
+Observe que há uma solução básica inicial, mas é infactível.
+
+$ x_3 = -5 $, $ x_4 = 12 $ e $ x_5 = -4 $ são as variáveis básicas.
+$ x_1 $ e $ x_2 $ são as variáveis \textbf{não} básicas e que assumem o valor
+zero.
+
+Portanto há necessidade de proceder a \textit{Fase I}.
+
+Há necessidade de variáveis artificiais na primeira e na terceira equações.
+Tem-se:
+\[
+  \begin{array}{lc}
+   \text{Min}  & w = x_6 + x_7  \\
+   \text{s.a.} & \\
+               & \sysdelim..\systeme
+               {
+               x_1 + 5x_2 - x_3 + x_6 = 5,
+               3x_1 + 4x_2 + x_4 = 12,
+               2x_1 + x_2 - x_5 + x_7 = 4
+               }
+  \end{array}
+\]
+
+Agora se tem uma solução básica factível, mas é artificial, ela não pertence ao
+problema original.
+
+Variáveis básicas: $ x_6 = 5 $, $ x_4 = 12 $ e $ x_7 = 4 $.
+
+Variáveis não básicas: $ x_1 = x_2 = x_3 = x_5 = 0 $.
+
+Valor da F.O.: $ w = 9 $.
+
+Passando ao quadro:
+
+\begin{table}[!h]
+\centering
+\caption{O quadro não está preparado}
+\begin{tabular}{|c|cccccccc|c|}
+  \hline
+  Min         & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $x_8$ &    \\
+  \hline
+  Var. Bas.   &   0   &   0 &   0 &   0 &   0 &   1 &   1 &  -1 &  0 \\
+  \hline
+  $x_6$       &   1   &   5 &  -1 &   0 &   0 &   1 &   0 &   0 &  5 \\
+  $x_4$       &   3   &   4 &   0 &   1 &   0 &   0 &   0 &   0 & 12 \\
+  $x_7$       &   2   &   1 &   0 &   0 &  -1 &   0 &   1 &   0 &  4 \\
+  \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+\centering
+\caption{O quadro está preparado}
+\begin{tabular}{|c|cccccccc|c|}
+  \hline
+  Min                    & $x_1$ & \textcolor{red}{$x_2$} & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $x_8$ &     \\
+  \hline
+  Var. Bas.              &   -3  &   -6                   &   1   &   0   &   1   &   0   &   0   &  -1   &  -9 \\
+  \hline
+  \textcolor{red}{$x_6$} &   1   &   \textcolor{red}{5}   &  -1   &   0   &   0   &   1   &   0   &   0   &   5 \\
+  $x_4$                  &   3   &   4                    &   0   &   1   &   0   &   0   &   0   &   0   &  12 \\
+  $x_7$                  &   2   &   1                    &   0   &   0   &  -1   &   0   &   1   &   0   &   4 \\
+  \hline
+\end{tabular}
+\end{table}
+
+A equação de bloqueio é:\;  $ x_{I} + \widehat{A}^{j}x_{J} = \widehat{b} $.
+
+O cálculo prático é:\;  $ \underset{i}{\text{Min}} \left\{\,\frac{\widehat{b}_i}{\widehat{a}_{ij}} \colon \widehat{a} > 0\,\right\} $
+
+\[
+  \text{Min}\left\{\,\frac{5}{5}, \frac{12}{4}, \frac{4}{1}\,\right\} = \frac{5}{5} \Longrightarrow x_6 \text{ sai da base }
+\]
+
+Os cálculos são feitos com o objetivo de transformar a coluna do $ x_2 $ na 
+coluna do $ x_6 $.
+Assim, o encontro da coluna da variável que deve entrar na base com a linha da
+variável básica que sai da base, $ x_6 $, é o \textcolor{red}{5}.
+Este ``5'' é dito \textbf{pivô}.
+ 
+\begin{table}[!h]
+\centering
+\caption{$\text{Min}\{\,\frac{1}{1/5}, \frac{8}{11/5}, \frac{3}{9/5}\,\} = \frac{3}{9/5} \Rightarrow x_7 \text{ sai da base}$}
+\begin{tabular}{|c|cccccccc|c|}
+  \hline
+  Min                    & \textcolor{red}{$x_1$}   & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_8$ &  w  &    \\
+  \hline
+  Var. Bas.              &                    -9/5  & 0     & -1/5  & 0     & 1     & 6/5   & 0     & -1  & -3 \\
+  \hline 
+  $x_2$                  &                    1/5   &   1   &  -1/5 &     0 &   0   &   1/5 &   0   &   0 &  1 \\
+  $x_4$                  &                   11/5   &   0   &   4/5 &     1 &   0   &  -4/5 &   0   &   0 &  8 \\
+  \textcolor{red}{$x_7$} &   \textcolor{red}{9/5}   &   0   &  -1/5 &     0 &  -1   &  -1/5 &   1   &   0 &  3 \\
+  \hline
+\end{tabular}
+\end{table} 
+ 
+\begin{table}[!h]
+\centering
+\caption{Problema original é factível}
+\begin{tabular}{|c|cccccccc|c|}
+  \hline
+  Min         & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &    \\
+  \hline
+  Var. Bas.   &   0   &   0 &   0 &   0 &   0 &   1 &   1 &  -1 &  0 \\
+  \hline
+  $x_2$       &   0   &   1 &  -2/9 &   0 &    1/9 &    2/9 &   -1/9 &   0 &  2/3 \\
+  $x_4$       &   0   &   0 &   5/9 &   1 &   11/9 &   -5/9 &  -11/9 &   0 & 13/3 \\
+  $x_1$       &   1   &   0 &   1/9 &   0 &   -5/9 &   -1/9 &    5/9 &   0 &  5/3 \\
+  \hline
+\end{tabular}
+\end{table}
+
+A solução básica factível atual é ótima e $ w = 0 $ indica que o problema 
+original é factível. \hfill (\textbf{Fim da Fase I})
+
+Agora se tem uma solução básica factível do problema original: $ x_2 = \frac{2}{3} $,
+$ x_4 = \frac{13}{3} $ e $ x_1 = \frac{5}{3} $.
+Com estes vetores, $ z = \frac{26}{3} $.
+
+Agora é a vez de montar o quadro para \textbf{Fase II}.
+
+Retomando a F.O. original: \newpage
+
+\begin{table}[!h]
+\centering
+\caption{Quadro ainda não preparado}
+\begin{tabular}{|c|cccccc|c|}
+  \hline
+  Min         & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $z$  &      \\
+  \hline
+  Var. Bas.   &  4    &   3   &     0 &   0   &     0 &  -1  & 0    \\
+  \hline
+  $x_2$       &  0    &   1   &  -2/9 &   0   &   1/9 &   0  & 2/3  \\
+  $x_4$       &  0    &   0   &   5/9 &   1   &  11/9 &   0  & 13/3 \\
+  $x_1$       &  1    &   0   &   1/9 &   0   &  -5/9 &   0  & 5/3  \\
+  \hline
+\end{tabular}
+\end{table}
+
+Falta preparar o quadro para poder fazer a discussão da solução ótima.
+
+\begin{table}[!h]
+\centering
+\caption{Quadro preparado}
+\begin{tabular}{|c|cccccc|c|}
+  \hline
+  Min                    & $x_1$ & $x_2$ & $x_3$ & $x_4$ & \textcolor{red}{$x_5$} & $z$  &       \\
+  \hline
+  Var. Bas.              &  0    &   0   &  -2/9 &   0   &  17/9                  &  -1  & -26/3 \\
+  \hline
+  $x_2$                  &  0    &   1   &  -2/9 &   0   &   1/9                  &   0  &   2/3 \\
+  \textcolor{red}{$x_4$} &  0    &   0   &   5/9 &   1   &  \textcolor{red}{11/9} &   0  &  13/3 \\
+  $x_1$                  &  1    &   0   &   1/9 &   0   &                   -5/9 &   0  &   5/3 \\
+  \hline
+\end{tabular}
+\end{table}
+
+
+
+Quadro preparado!
+A solução básica factível atual não é ótima.
+
+Fazendo da equação de bloqueio para se saber se há outra solução básica que
+melhore o valor da F.O.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|cccccc|c|}
+  \hline
+  Min         & $x_1$ & $x_2$ & $x_3$ & $x_4$    & $x_5$ & $z$  &         \\
+  \hline
+  Var. Bas.   &  0    &   0   & -3/11 & -17/11   &     0 &  -1  & -169/11 \\
+  \hline
+  $x_2$       &  0    &   1   & -3/11 &  -1/11   &     0 &   0  &    3/11 \\
+  $x_5$       &  0    &   0   &  5/11 &   9/11   &     1 &   0  &   39/11 \\
+  $x_1$       &  1    &   0   &  4/11 &   5/11   &     0 &   0  &   40/11 \\
+  \hline
+\end{tabular}
+\end{table}
+
+A solução básica factível atual é ótima: 
+\[ 
+  x_2 = \frac{3}{11} ,  \quad x_5 = \frac{39}{11} \quad \text{ e } \quad x_1 = \frac{40}{11} .
+\]
+O valor ótimo de $ z $ é 
+
+\begin{center}
+  \shadowbox
+  {
+    $ \dfrac{169}{11} $
+  }	
+\end{center}

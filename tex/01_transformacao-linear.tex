@@ -1,0 +1,141 @@
+%==============================================================================
+% Programação Linear
+% 25/08/2021
+%==============================================================================
+
+\chapter{Programação Linear}
+
+\section{Discussão da Solução Ótima} %-----------------------------------------
+
+Antes de entrarmos na discussão da solução ótima faremos alguns comentários sobre
+o \textbf{Método Simplex}.
+
+O Método Simplex faz uso do algorítimo \textbf{Simplex Duas Fases}.
+A Fase I é requerida quando após se acrescentar as variáveis de folga e de excesso
+às inequações, isto é, passar o problema à forma padrão, não se vislumbra uma
+solução básica factível de pronto.
+O objetivo da Fase I é obter uma solução básica factível inicial.
+A Fase II é o algorítimo propriamente dito, que para começar as iterações requer
+uma solução básica factível inicial.
+Os problemas cujas restrições são inequações do tipo ``menor ou igual'', e lembrando
+que o vetor $ b $ é sempre positivo, têm sempre uma solução básica factível
+inicial.
+Nos outros casos, em geral, não tem uma solução básica factível inicial, logo,
+necessitam de proceder a Fase I.
+
+Para discussão da solução ótima, suporemos que se tem uma solução básica factível
+inicial.
+Logo, vamos utilizar a Fase II.
+
+Tanto na Fase I, como na Fase II, a cada iteração verifica-se se a solução básica
+atual é ótima.
+Se é ótima, fim.
+Se não é ótima, se vai para o critério de escolha da variável não básica que deve 
+ser a candidata para entrar na base.
+Escolhida a variável não básica candidata a entrar na base vem o critério da 
+variável básica que sairá da base.
+
+Pode ocorrer empate, tanto para a escolha da variável entrante, como para escolha
+da que vai sair.
+Ditas essas coisas em linhas gerais, vamos aos detalhes.
+
+Voltemos ao sistema de equações,
+
+\begin{align*}
+  \min \quad        & z = c_I \inversaA b + \left[c_J - c_I \inversaA A^{J}\right] x_J\\
+  \text{s.a.} \quad & x_I + \inversaA A^{J} x_J = \inversaA b \\
+                    & x_I, x_J \geq 0
+\end{align*}
+
+Na Função Objetivo a parte variável é a segunda parcela do segundo membro,
+
+\[
+  \left[ c_J - c_I \inversaA A^{J} \right]  x_J
+\]
+
+Suponha que a solução básica atual é ótima.
+Isto significa que o valor de $ z $, que é $ c_I \inversaA b $, não tem mais 
+como diminuir, ou seja, se algum $ x_j $ (variável não básica) aumentar de valor,
+o valor de $ z $ aumentará.
+Isto implica que o coeficiente $ \widehat{c}_j $ de $ x_j $ é positivo.
+Por outro lado, se todos os $ \widehat{c}_j > 0 $, qualquer variável $ x_j $
+que aumentar de valor fará o valor de $ z $ também aumentar, logo, a solução 
+atual é ótima.
+
+Conclusão:
+
+\begin{center}
+\fbox
+{
+  \begin{minipage}{0.7\linewidth}
+    A solução básica atual é ótima e única se, e somente se, $ \widehat{c}_j > 0 $,
+    $ \forall j \in J $.
+  \end{minipage}
+}
+\end{center}
+
+Se a solução básica atual é ótima e algum $ \widehat{c}_j = 0 $, haverá infinitas 
+soluções ótimas, pois para cada valor positivo que $ x_j $ assumir corresponderá 
+a novos valores das variáveis básicas, mas o valor de $ z $ permanece o mesmo, 
+ou seja, $ c_I \inversaA b $, pois $ \widehat{c}_j x_j = 0 $.
+Para saber os valores das variáveis básicas para cada valor positivo assumido
+por $ x_j $, observe a equação de bloqueio:
+
+\[
+  x_I + \widehat{A}^j x_j = \widehat{b}
+\]
+
+Agora cabe uma pergunta: \textit{Neste caso há outra solução básica ótima?}
+Mais uma vez a resposta é dada pela equação de bloqueio.
+
+Se algum $ \widehat{a}_ij > 0 $, haverá outra solução básica ótima, pois a 
+variável básica da linha $ i $ irá para zero quando $ x_j $ aumentar de valor.
+Caso haja mais de um $ \widehat{a}_ij > 0 $, as variáveis básicas das respectivas
+linhas irão para zero.
+Mas, se uma variável atingiu o valor zero, o $ x_j $ não pode mais aumentar de 
+valor, caso contrário, a variável básica torna-se-á negativa.
+Logo, $ x_j $ será bloqueado quando a primeira variável básica atingir o valor
+zero.
+O valor de $ x_j $ que faz a variável básica $ x_{B_i} = 0 $ é dado por:
+
+\[
+  \frac{\widehat{b}_i}{\widehat{a}_{ij}}  
+\]
+
+Assim, se houver mais de uma variável básica indo para zero, deve se escolher
+aquela que primeiro atingir zero.
+Para isso, calcula-se:
+
+\[
+  \min_{i}  
+  \left\{\, 
+    \frac
+    {
+      \widehat{b}_i
+    }
+    {
+      \widehat{a}_{ij}
+    }; 
+    \quad 
+    \widehat{a}_{ij} > 0 
+  \,\right\}
+\]
+
+\begin{obs}
+  Se duas ou mais variáveis básicas atingirem zero simultaneamente, estamos 
+  diante de uma solução básica degenerada.
+  Mas, só uma delas sai da base e $ x_j $ entra no lugar da que saiu.
+\end{obs}
+
+O cáculo iterativo para se chegar a nova solução básica é transformar a coluna
+$ \widehat{A}^j $ na coluna da matriz identidade que está com a variável básica
+que está saindo da base.
+Se $ x_{B_i} $ é a variável básica que está saindo da base, o primeiro cálculo
+a ser feito é dividir toda linha $ i $ por $ \widehat{a}_{ij} $.
+A partir daí, por meio de operações elementares sobre as linhas, é transformar
+em zero o $ \widehat{c}_j $ e todos os $ \widehat{a}_{kj} $, com $ k \in I $ e 
+$ k \neq i $.
+Feito isto, obteve-se a nova solução básica.
+Agora, volta-se ao teste de otimalidade.
+
+\section{Montagem do Quadro Simplex} %-----------------------------------------
