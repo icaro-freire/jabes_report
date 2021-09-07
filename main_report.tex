@@ -21,6 +21,7 @@
 \usepackage{fancybox}
 \usepackage{fancyhdr}
 \usepackage{booktabs}
+  \renewcommand{\arraystretch}{1.5}
 \usepackage{mathtools, amsthm, amssymb, amscd}
   \makeatletter
     \renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
@@ -49,6 +50,8 @@
     pdfsubject  = {Aulas do Professor Jabes}, 
     pdfkeywords = {programação linear, linear programming, algebra linear}
  }
+\usepackage{tikz}
+\usepackage{tikz-cd}
 
 % Configurações ---------------------------------------------------------------
 
@@ -64,6 +67,19 @@
 \newcommand{\custoGeral}[1]{c_{1}x_{1} + c_{2}x_{x} + \ldots + c_{n}x_{n} }
 \newcommand{\linhaSistema}[1]{a_{#11}x_{1} + a_{#12}x_{2} + \ldots + a_{#11}x_{n}}
 \newcommand{\inversaA}{\left(A^{I}\right)^{-1}}
+\newcommand{\setaEntra}[1]{
+  \ensuremath{\stackrel{\textcolor{red}{\downarrow}}{x_{#1}}}
+}
+\newcommand{\setaSai}[1]{
+  \ensuremath{\hspace{-0.55cm}\textcolor{red}{\leftarrow}\, x_{#1}}
+}
+
+\newcommand{\circulo}[1]{
+  \tikz[baseline=(char.base)]
+  {
+    \node[shape = circle, draw, inner sep = 2pt, dashed, draw = blue] (char) {$#1$};
+  }
+}
 
 % Cabeçalho de todo o texto ---------------------------------------------------
 \renewcommand{\headrulewidth}{2pt}

@@ -139,3 +139,243 @@ Feito isto, obteve-se a nova solução básica.
 Agora, volta-se ao teste de otimalidade.
 
 \section{Montagem do Quadro Simplex} %-----------------------------------------
+
+Toda a discussão sobre a solução ótima e pivoteamento foram realizadas com o P.L.
+na forma:
+
+\begin{align*}
+  \min        \quad & z = c_I \inversaA b + \left[c_J - c_I \inversaA A^J \right] x_J \\
+  \text{s.a.} \quad & x_I + \inversaA A^J x_J = \inversaA b \\
+                    & x_I, x_J \geq 0
+\end{align*}
+
+Para montagem do quadro, toda expressão que tiver variável colocamos no primeiro
+membro das equações, e as constantes, no segundo.
+Mas, para manter a discussão sem alterações, sobre o sinal de $ \widehat{c}_J $,
+colocamos a F.O. na seguinte forma:
+
+\[
+  \left[c_J - c_I \inversaA A^J \right] x_J - z = -c_I \inversaA b
+\]
+
+E o quadro do Simplex é o seguinte:
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|ccc|c}
+    Min         & $x_I$        & $x_J$                       &  $z$  & \\ \hline
+    Var. Bás.   & $0$          & $c_J - c_I \inversaA A^{J}$ & $-1$  & $-c_I \inversaA b$\\ \hline
+    $x_I$       & $\mathbb{I}$ & $\inversaA A^J$             & $0$   & $\inversaA b$ \\ \hline
+                &              & $x_I, x_J \geq 0$           &       &
+  \end{tabular}
+\end{table}
+
+Ou fazendo uso da notação simplificada:
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|ccc|c}
+    Min       & $x_I$        & $x_J$           & $z$  & \\ \hline
+    Var. Bás. & $0$          & $\widehat{c}_J$ & $-1$ & $-c_I \inversaA b$ \\ \hline
+    $x_I$     & $\mathbb{I}$ & $\widehat{A}^J$ & $0$  & $\widehat{b}$ \\ \hline
+              &              & $x_I, x_J$      &      &
+  \end{tabular}
+\end{table}
+
+Na prática, na primeira linha, as variáveis são dispostas na ordem crescente dos
+índices; e, na última linha, não colocamos.
+
+Os procedimentos e discussões sobre a solução ótima são os mesmso tanto para a 
+Fase I, como para a Fase II.
+
+Vejamos um exemplo que não requer a Fase I.
+
+\begin{exemplo}
+  Resolva o P.L. abaixo:
+  \begin{align*}
+    \min        \quad & z = -3 x_1 + 5 x_2 - 2 x_3 \\
+    \text{s.a.} \quad & 
+                        \begin{aligned}[t]
+                          2 x_1 + 2 x_2 + 4 x_3 &\leq 12 \\
+                          - x_1 + 3 x_2 + 2 x_3 &\leq 6  \\
+                          2 x_1 + 4 x_2 -   x_3 &\leq 4
+                        \end{aligned}\\
+                      & x_1, x_2, x_3 \geq 0.
+  \end{align*}
+\end{exemplo}
+
+Primeiro passa o problema para forma padrão, acrescentando-se as variáveis de 
+folga.
+
+\begin{align*}
+  \min        \quad & z = -3 x_1 + 5 x_2 - 2 x_3 \\
+  \text{s.a.} \quad & 
+                      \begin{aligned}[t]
+                        2 x_1 + 2 x_2 + 4 x_3 + x_4 \phantom{+ x_5 + x_6} &= 12 \\
+                        - x_1 + 3 x_2 + 2 x_3 \phantom{+ x_4} + x_5 \phantom{+ x_6}&= 6  \\
+                        2 x_1 + 4 x_2 -   x_3 \phantom{+ x_4 + x_5} + x_6 &= 4
+                      \end{aligned}\\
+                    & x_1, x_2, x_3, x_4, x_5 \geq 0.
+\end{align*}
+
+Note que há uma solução básica factível inicial: 
+\begin{itemize}
+  \item \textbf{Variáveis Básicas:} $ x = 12, x_5 = 6 \text{ e } x = 4 $;
+  \item \textbf{Variáveis não Básicas:} $ x_1 = x_2 = x_3 = 0$;
+  \item \textbf{Valor de F.O.}: $ z = 0 $.
+\end{itemize}
+
+Montando o quadro Simplex:
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|ccccccc|c}
+    Min             & $\setaEntra{1}$   & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $z$  &      \\ \hline
+    Var. Bás.       & $-3$              & $5$   & $-2$  & $0$   & $0$   & $0$   & $-1$ & $0$  \\ \hline           
+    $x_4$           & $ 2$              & $2$   & $4$   & $1$   & $0$   & $0$   & $0$  & $12$ \\
+    $x_5$           & $-1$              & $3$   & $2$   & $0$   & $1$   & $0$   & $0$  & $6$  \\
+    $\setaSai{6}$   & $\circulo{2}$     & $4$   & $-1$  & $0$   & $0$   & $1$   & $0$  & $4$
+  \end{tabular}
+\end{table}
+
+Neste caso, em que as inequações são todos do tipo ``$\leq$'', o quadro sempre está
+preparado, istó é, pronto para discussão se a solução  básica atual é ótima ou
+não.
+
+Há dois $\widehat{c} < 0$, o que indica que a solução básica atual não é ótima 
+($\widehat{c}_7 = -3$ e $\widehat{c}_3 = -2$).
+O mais negativo corresponde à variável não básica que deve ser a candidata a 
+entrar na base.
+Logo, $ x_1 $ é a candidata a entrar  na base.
+Agora, examinaremos o $ \widehat{A}^{1} $.
+
+\[
+  \widehat{A}^{1} = 
+    \begin{bmatrix}
+      2 \\
+      -1 \\
+      2
+    \end{bmatrix}
+\]
+
+Como há elementos positivos, há outra solução básica factível que melhora a F.O.
+($\widehat{a}_{11} = 2$ e $\widehat{a}_{31} = 2$).
+
+A equação de bloqueio é 
+\[
+  \begin{bmatrix}
+    x_4 \\
+    x_5 \\
+    x_6
+  \end{bmatrix}  
+  +
+  \begin{bmatrix}
+    2 \\
+    -1\\
+    2
+  \end{bmatrix}
+  = 
+  \begin{bmatrix}
+    12 \\
+    6 \\
+    4
+  \end{bmatrix},
+\]
+ e o cálculo prático para se saber que variável  básica sai da base é 
+ \[
+   \Min_{i} \left\{ \frac{\widehat{b}_i}{\widehat{a}_{ij}}; \;\; \widehat{a}_{ij} > 0 \right\}
+ \]
+
+ Assim, tem-se o seguinte:
+ \[
+   \Min\left\{\frac{12}{2}, \frac{4}{2}\right\}  = \frac{4}{2} = 2.
+ \]
+
+ Significa que $ x_6 $ deve sair da base, e $ x_1 $ entra na base com valor 2.
+ 
+ Observe: se $ x_1 = 2 $, então $ x_6 = 0, x_4 = 8 \text{ e } x_5 = 8 $.
+
+ A coluna $ \widehat{A}^{1} $ deve ser transformada na coluna 
+ \[
+   \begin{bmatrix} 
+    0 \\ 
+    0 \\ 
+    1 
+   \end{bmatrix} 
+\] 
+que é a atual coluna de $ x_6 $.
+
+O novo quadro é:
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|ccccccc|c}
+    Min           & $x_1$ & $x_2$ & $\setaEntra{3}$ & $x_4$ & $x_5$ & $x_6$ & $z$  &     \\ \hline
+    Var. Bás.     & $0$   & $11$  & $-7/2$          & $0$   & $0$   & $3/2$ & $-1$ & $6$ \\ \hline
+    $\setaSai{4}$ & $0$   & $-2$  & $\circulo{5}$   & $1$   & $0$   & $-1$  & $0$  & $8$ \\
+    $x_5$         & $0$   & $5$   & $3/2$           & $0$   & $1$   & $1/2$ & $0$  & $8$ \\
+    $x_1$         & $1$   & $2$   & $-1/2$          & $0$   & $0$   & $1/2$ & $0$  & $2$ 
+  \end{tabular}
+\end{table}
+
+A solução básica atual não é ótima: $ \widehat{c}_3 = -7/2 $.
+Único negativo, logo, $ x_3 $ é camdidato a entrar na base.
+
+O elemento do encontro da coluna da variável que entra com a linha da variável 
+que sai é chamado \textbf{pivô}.
+Ele é que será transformado em ``1'' e todos os cálculos são realizados por meio 
+dele.
+
+Da \textbf{Equação de Bloqueio} 
+\[
+  \begin{bmatrix}
+    x_4 \\
+    x_5 \\
+    x_1
+  \end{bmatrix}  
+  + \begin{bmatrix}
+    5    \\
+    3/2  \\
+    -1/2 \\
+  \end{bmatrix}
+  = 
+  \begin{bmatrix}
+    8 \\
+    8 \\
+    2
+  \end{bmatrix}
+\]
+se retira o cálculo prático, do qual se obtém duas informações:
+\begin{enumerate}
+  \item[(i)] com que valor $ x_3 $ \textbf{entra};
+  \item[(ii)] e que variável \textbf{sai} da base.
+\end{enumerate}
+
+Como
+\[
+  Min\left\{\frac{8}{5}, \frac{8}{3/2}\right\}  = \frac{8}{5},
+\]
+logo, $x_4$ sai da base.
+
+\begin{table*}[!htbp]
+  \centering
+  \begin{tabular}{c|ccccccc|c}
+    Min       & $x_1$ & $x_2$  & $x_3$ & $x_4$   & $x_5$ & $x_6$  & $z$  &        \\ \hline
+    Var. Bás. & $0$   & $48/5$ & $0$   & $7/10$  & $0$   & $4/5$  & $-1$ & $58/5$ \\ \hline 
+    $x_3$     & $0$   & $-2/5$ & $1$   & $1/5$   & $0$   & $-1/5$ & $0$  & $8/5$  \\
+    $x_5$     & $0$   & $28/5$ & $0$   & $-3/10$ & $1$   & $4/5$  & $0$  & $28/5$ \\
+    $x_1$     & $1$   & $9/5$  & $0$   & $1/10$  & $0$   & $2/5$  & $0$  & $14/5$ 
+  \end{tabular}
+\end{table*}
+
+Todos os $ \widehat{c}_J > 0 $, logo a solução básica atual é ótima e única.
+
+\begin{itemize}
+  \item $ \widehat{c}_2 = 48/5, \widehat{c}_4 = 7/10 \;\text{ e }\; \widehat{c}_6 = 4/5 $
+  \item o valor ótimo de $ z $ é $ -58/5 $
+  \item variáveis básicas: $ x_3 = 8/5, x_5 = 28/5 \;\text{ e }\; x_1 = 14/5 $
+  \item variáveis não básicas: $ x_2 = x_4 = x_6 = 0 $
+\end{itemize}
+
+\section{Fase I} %-------------------------------------------------------------
+
