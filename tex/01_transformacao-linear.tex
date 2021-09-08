@@ -379,3 +379,422 @@ Todos os $ \widehat{c}_J > 0 $, logo a solução básica atual é ótima e únic
 
 \section{Fase I} %-------------------------------------------------------------
 
+\subsection{Procedimentos da Fase I}
+
+\begin{enumerate}
+  \item Abandone temporariamente a F.O. do problema;
+  \item Crie uma F.O. artificial para ser minimizada e definida pela soma das 
+        variáveis artificiais que serão adicionadas às restrições com o problema
+        já na forma padrão;
+  \item Adicione uma variável na equação que não tiver uma variável básica 
+        factível.
+        Essa variável adicionada não pertence ao problema; é uma variável 
+        artificial;
+  \item Monte o quadro Simplex;
+  \item Prepare o quadro;
+  \item Proceda como na Fase II;
+  \item 
+   \begin{enumerate}
+     \item Se ao chegar na solução ótima a F.O. artificial tiver valor nulo, o 
+           problema original é factível.
+           Abandone a F.O. e extraia a solução básica encontrada para montar o
+           quadro Simplex para Fase II.
+     \item Se ao chegar na solução ótima o valor da a F.O. for \textit{diferente} 
+           de zero, o problema original é \textit{infactível}, isto é, o conjunto
+           das soluções factíveis é vazio.           
+   \end{enumerate}
+\end{enumerate}
+
+Vejamos dois exemplos: um em que o problema é infactível, e outro, factível.
+
+\begin{exemplo}
+  Encontre, se possível, uma solução básica factível para o P.L. abaixo:
+
+  \begin{align*}
+    \max        \quad & z = 6 x_1 + 8 x_2 \\
+    \text{s.a.} \quad & 
+                        \begin{aligned}[t]
+                          -2 x_1 + 3 x_2 &\geq 6 \\
+                           2 x_1 - 3 x_2 &\geq 4 \\
+                           3 x_1 + 2 x_2 &\leq 8
+                        \end{aligned}\\
+                      & x_1, x_2 \geq 0
+  \end{align*}
+\end{exemplo}
+
+Passando o problema para forma padrão, não se obtém uma solução básica factível
+inicial.
+Logo, é necessário a Fase I.
+
+\begin{align*}
+  \max        \quad & z = 6 x_1 + 8 x_2 \\
+  \text{s.a.} \quad &
+                      \begin{aligned}[t]
+                        -2 x_1 + 3 x_2 - x_3 \phantom{- x_4 + x_5}           &= 6 \\
+                         2 x_1 - 3 x_2 \phantom{- x_3} - x_4 \phantom{+ x_5} &= 4 \\
+                         3 x_1 + 2 x_2 \phantom{- x_3 - x_4} + x_5           &= 8
+                      \end{aligned}\\
+                    & x_1, x_2, x_3, x_4, x_5 \geq 0
+\end{align*}
+
+A solução básica que se é infactível.
+$ x_3 = -6, x_4 = -4 \;\text{ e } $ $ x_5 = 8 $ são as variáveis básicas, e 
+$ x_1 = x_2 = 0 $, são as não básicas.
+
+\textit{Fase I}
+
+\begin{align*}
+  \max        \quad & w = x_6 + x_7 \\
+  \text{s.a.} \quad &
+                      \begin{aligned}[t]
+                        -2 x_1 + 3 x_2 - x_3 \phantom{- x_4 + x_5} + x_6 \phantom{+ x_7} &= 6 \\
+                         2 x_1 - 3 x_2 \phantom{- x_3} - x_4 \phantom{+ x_5 + x_6} + x_7 &= 4 \\
+                         3 x_1 + 2 x_2 \phantom{- x_3 - x_4} + x_5 \phantom{+ x_6 + x_7} &= 8
+                      \end{aligned}\\
+                    & x_1, x_2, x_3, x_4, x_5, x_6, x_7 \geq 0
+\end{align*}
+
+Com a adição das variáveis artificiais $ x_6 $ e $ x_7 $, obtém-se uma solução
+básica factível, mas ela é artificial; não pertence ao problema original.
+A solução básica factível artificial é $ x_6 = 6, x_7 = 4 \;\text{ e }\; x_5 = 8 $,
+as variáveis básicas, $ x_1 = x_2 = x_3 = x_4 = 0 $, as não básicas e $ w = 10 $.
+
+\newpage
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Montando o quadro}
+  \begin{tabular}{c|cccccccc|c}
+    Min       & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &  \\
+    \hline
+    Var. Bás. & $0$     & $0$     & $0$     & $0$     & $0$     & $1$     & $1$     & $-1$  & $0$  \\
+    \hline
+    $x_6$     & $-2$    &  $3$    & $-1$    &  $0$    & $0$     & $1$     & $0$     & $0$   & $6$ \\ 
+    $x_7$     &  $2$    & $-3$    &  $0$    & $-1$    & $0$     & $0$     & $1$     & $0$   & $4$ \\
+    $x_5$     &  $3$    &  $2$    &  $0$    &  $0$    & $1$     & $0$     & $0$     & $0$   & $8$
+  \end{tabular}
+\end{table}
+
+O quadro não está preparado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Quadro Preparado}
+  \begin{tabular}{c|cccccccc|c}
+    Min       & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &  \\
+    \hline
+    Var. Bás. & 0     & 0     & 1     & 1     & 0     & 0     & 0     & -1  & -10 \\
+    \hline
+    $x_6$     & -2    &  3    & -1    &  0    & 0     & 1     & 0     & 0   & 6 \\ 
+    $x_7$     & 2     & -3    &  0    & -1    & 0     & 0     & 1     & 0   & 4 \\
+    $x_5$     & 3     &  2    &  0    &  0    & 1     & 0     & 0     & 0   & 8
+  \end{tabular}
+\end{table}
+
+O quadro está preparado, mas apresenta a solução com a $ F.O. \neq 0 $.
+Portanto, o problema original é infactível.
+Note que os $ \widehat{c}_j \geq 0 $, isto é, $ \widehat{c}_1 = 0, 
+\widehat{c}_2 = 0, \widehat{c}_3 = 1 \;\text{ e }\; \widehat{c} = 1$.
+
+A Figura~\ref{fig:retas} mostra que o conjunto das soluções é vazio.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = 0.9\linewidth]{retas}
+  \caption{Note que não há região alguma comum às três inequações.}
+  \label{fig:retas}
+\end{figure}
+
+\newpage
+
+\begin{exemplo}
+Aplique a Fase I para obter uma solução básica factível do problema abaixo, 
+deixando no final o quadro preparado para a Fase II.
+
+\begin{align*}
+  \max        \quad & z = 4 x_1 + 3 x_2  \\
+  \text{s.a.} \quad & 
+                      \begin{aligned}[t]
+                          x_1 + 5 x_2 &\geq 5  \\
+                        3 x_1 + 4 x_2 &\leq 12 \\
+                        2 x_1 +   x_2 &\geq 4
+                      \end{aligned}\\
+                    & x_1, x_2 \geq 0
+\end{align*}
+\end{exemplo}
+
+Passando o problema à forma padrão:
+
+\begin{align*}
+  \max        \quad & z = 4 x_1 + 3 x_2 \\
+  \text{s.a.} \quad & 
+                      \begin{aligned}[t]
+                          x_1 + 5 x_2 - x_3 \phantom{+ x_4 - x_5}           &= 5  \\
+                        3 x_1 + 4 x_2 \phantom{- x_3} + x_4 \phantom{- x_5} &= 12 \\
+                        2 x_1 +   x_2 \phantom{- x_3 + x_4} - x_5           &= 4
+                      \end{aligned}\\
+                    & x_1, x_2, x_3, x_4, x_5 \geq 0
+\end{align*}
+
+Observe que a solução básica que se tem é infactível:
+\begin{itemize}
+  \item $ x_3 = -5, x_4 = 12 \;\text{ e }\; x_5 = -4 $ são as variáveis básicas;
+  \item $ x_1 = x_2 = 0 $ são as não básicas.
+\end{itemize}
+
+\textit{Fase I:}
+
+\begin{align*}
+  \min        \quad & w = x_6 + x_7 \\
+  \text{s.a.} \quad & 
+                      \begin{aligned}[t]
+                         x_1 + 5 x_2 - x_3 \phantom{+ x_4 - x_5} + x_6 \phantom{+ x_7} &= 5 \\
+                       3 x_1 + 4 x_2 \phantom{- x_3} + x_4 \phantom{- x_5 + x_6 + x_7} &= 12 \\
+                       2 x_1 +   x_2 \phantom{- x_3 + x_4} - x_5 \phantom{+ x_6} + x_7 &= 4
+                      \end{aligned}\\
+                    & x_1, x_2, x_3, x_4, x_5, x_6, x_7 \geq 0
+\end{align*}
+
+Agora tem-se uma solução básica factível, mas é artificial, não pertence ao 
+problema original.
+\begin{itemize}
+  \item Variáveis Básicas: $ x_6 = 5, x_4 = 12\;\text{ e }\; x_7 = 4 $;
+  \item Variáveis não Básicas: $ x_1 = x_2 = x_3 = x_5 = 0 $;
+  \item Valor de $w$: $ w = 9 $.
+\end{itemize}
+
+\newpage
+
+Montando o quadro
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|cccccccc|c}
+    Min       & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &    \\ \hline 
+    Var. Bás. & 0     & 0     & 0     & 0     & 0     & 1     & 1     & -1  & 0  \\ \hline
+    $x_6$     & 1     & 5     & -1    & 0     & 0     & 1     & 0     & 0   & 5  \\
+    $x_4$     & 3     & 4     & 0     & 1     & 0     & 0     & 0     & 0   & 12 \\
+    $x_7$     & 2     & 1     & 0     & 0     & -1    & 0     & 1     & 0   & 4  
+  \end{tabular}
+\end{table}
+
+O quadro não está preparado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Quadro Preparado}
+  \begin{tabular}{c|cccccccc|c}
+    Min           & $x_1$ & $\setaEntra{2}$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &    \\ 
+    \hline 
+    Var. Bás.     & -3    & -6              & 1     & 0     & 1     & 0     & 0     & -1  & -9  \\ 
+    \hline
+    $\setaSai{6}$ & 1     & \circulo{5}     & -1    & 0     & 0     & 1     & 0     & 0   & 5  \\
+    $x_4$         & 3     & 4               & 0     & 1     & 0     & 0     & 0     & 0   & 12 \\
+    $x_7$         & 2     & 1               & 0     & 0     & -1    & 0     & 1     & 0   & 4
+  \end{tabular}
+\end{table}
+
+Como há $ \widehat{c}_j < 0 $, a solução básica atual não é ótima.
+O mais negativo é $ \widehat{c}_2 $, isto é, $-6$.
+Assim, $ x_2 $ é candidato a entrar na base.
+A equação de bloqueio fornece a informação que variável básica sairá da base.
+
+\[
+  x_I + \widehat{A}^2 x_2 = \widehat{b}, 
+  \quad 
+  \text{ou seja}, 
+  \quad
+  \begin{bmatrix}
+    x_6 \\
+    x_4 \\
+    x_7
+  \end{bmatrix}
+  + 
+  \begin{bmatrix}
+    5 \\
+    4 \\
+    1  
+  \end{bmatrix}
+  x_2
+  =
+  \begin{bmatrix}
+    5  \\
+    12 \\
+    4
+  \end{bmatrix}
+\]
+
+Cálculo prático: $\min \left\{\,\frac{\widehat{b}_i}{\widehat{a}_{ij}};\;\; \widehat{a}_{ij} > 0\,\right\}$,
+ou seja, 
+\[
+  \min \left\{\frac{5}{5}, \frac{12}{4}, \frac{4}{1}\right\} =\frac{5}{5} = 1
+\]
+Isso implica que $ x_6 $ sai da base e $ x_2 $ entra na base com valor $1$.
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|cccccccc|c}
+    Min           & $\setaEntra{1}$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &    \\ \hline 
+    Var. Bás.     & -9/5            & 0     & -1/5  & 0     & 1     & 6/5   & 0     & -1  & -3 \\ \hline
+    $x_2$         & 1/5             & 1     & -1/5  & 0     & 0     & 1/5   & 0     & 0   & 1  \\
+    $x_4$         & 11/5            & 0     & 4/5   & 1     & 0     & -4/5  & 0     & 0   & 8  \\
+    $\setaSai{7}$ & \circulo{9/5}   & 0     & 1/5   & 0     & -1    & -1/5  & 1     & 0   & 3
+  \end{tabular}
+\end{table}
+
+A solução básica atual não é ótima, pois há $ \widehat{c}_j < 0 $ e o mais 
+negativo é $ \widehat{c}_1 = -9/5 $.
+Pela equação de bloqueio, $ x_I + \widehat{A}^{1}x_1 = \widehat{b} $, ou seja,
+\[
+  \begin{bmatrix}
+    x_2 \\ x_4 \\ x_7
+  \end{bmatrix} 
+  +
+  \begin{bmatrix}
+    1/5 \\ 11/5 \\ 9/5 
+  \end{bmatrix}
+  x_1
+  =
+  \begin{bmatrix}
+    1 \\ 8 \\ 3
+  \end{bmatrix}.
+\]
+
+Note que, quando $ x_1 $ aumenta de valor, todas as variáveis básicas vão para
+zero e quando $ x_1 = 5/3 $, $ x_7 = 0 $, $ x_2 = 5 $ e $ x_4 = 40/11 $.
+
+Assim, $ x_7 $ sai da base.
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|cccccccc|c}
+    Min       & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $x_6$ & $x_7$ & $w$ &      \\ \hline 
+    Var. Bás. & 0     & 0     & 0     & 0     & 0     & 1     & 1     & -1  & 0    \\ \hline
+    $x_2$     & 0     & 1     & -2/9  & 0     & 1/9   & 2/9   & -1/9  & 0   & 2/3  \\
+    $x_4$     & 0     & 0     & 5/9   & 1     & 11/9  & -5/9  & -11/9 & 0   & 13/3 \\
+    $x_1$     & 1     & 0     & 1/9   & 0     & -5/9  & -1/9  & 5/9   & 0   & 5/3
+  \end{tabular}
+\end{table}
+
+Note que todos os $ \widehat{c}_j \geq 0 $, logo, a solução atual é ótima e como
+como $ w = 0 $, o problema original é factível.
+A solução básica atual é uma solução do problema original.
+Fim da Fase I.
+A Figura~\ref{fig:faseI} mostra o caminho da Fase I.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width = 0.7\linewidth]{faseI.png}
+  \caption{O caminho seguido pela Fase I}
+  \label{fig:faseI}
+\end{figure}
+
+A sequência é $ (0, 0) \to (0, 1) \to \left(5/3, 2/3\right) $.
+As soluções básicas correspondes aos pontos $ (0, 0) $ e $ (0, 1) $ são 
+infactíveis.
+
+Apenas as soluções básicas factíveis são pontos extremos.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Foi colocado o transposto para ocupar menos espaço}
+  \begin{tabular}{cl}
+    \toprule
+    \textbf{Ponto extremo} & \textbf{Solução Básica Factível}\\
+    \midrule
+    $\left(\frac{5}{3}, \frac{2}{5}\right)$    & $\left[\frac{5}{3}, \frac{2}{5}, 0, \frac{13}{3}, 0 \right]^t$ \\
+    $\left(\frac{40}{11}, \frac{3}{11}\right)$ & $\left[\frac{40}{11}, \frac{3}{11}, 0, 0, \frac{39}{11} \right]^t$ \\
+    $\left(\frac{4}{5}, \frac{12}{5}\right)$   & $\left[\frac{4}{5}, \frac{12}{5}, \frac{64}{5}, 0, 0 \right]^t$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Passemos à Fase II.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{O quadro não está preparado}
+  \begin{tabular}{c|cccccc|c}
+    Max       & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ & $z$ &      \\ \hline
+    Var. Bás. & 4     & 3     & 0     & 0     & 0     & -1  & 0    \\ \hline
+    $x_2$     & 0     & 1     & -2/9  & 0     & 1/9   & 0   & 2/3  \\
+    $x_4$     & 0     & 0     & 5/9   & 1     & 11/9  & 0   & 13/3 \\
+    $x_1$     & 1     & 0     & 1/9   & 0     & -5/9  & 0   & 5/3
+  \end{tabular}
+\end{table}
+
+O próximo quadro está preparado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{O quadro não está preparado}
+  \begin{tabular}{c|cccccc|c}
+    Max           & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $\setaEntra{5}$ & $z$ &       \\ \hline
+    Var. Bás.     & 0     & 0     &  2/9  & 0     & 17/9            & -1  & -26/3 \\ \hline
+    $x_2$         & 0     & 1     & -2/9  & 0     &  1/9            & 0   &  2/3  \\
+    $\setaSai{4}$ & 0     & 0     &  5/9  & 1     & \circulo{11/9}  & 0   &  13/3 \\
+    $x_1$         & 1     & 0     &  1/9  & 0     & -5/9            & 0   &  5/3
+  \end{tabular}
+\end{table}
+
+A solução básica atual não é ótima; existe $ \widehat{c}_j > 0 $ e o maior valor
+é $ \widehat{c}_5 = 17/9 $.
+
+$ \widehat{A}^{5} $ tem elementos positivos, logo, há outra solução básica que
+melhora o valor da F.O.
+
+\[
+  \widehat{A}^{5} =
+  \begin{bmatrix}
+    \widehat{a}_{15} \\
+    \widehat{a}_{25} \\
+    \widehat{a}_{35}
+  \end{bmatrix} 
+  =
+  \begin{bmatrix}
+     1/9  \\
+     11/9 \\
+    -5/9
+  \end{bmatrix} .
+\]
+
+O cálculo prático $\min \left\{\,\frac{\widehat{b}_i}{\widehat{a}_{ij}};\;\; \widehat{a}_{ij} > 0\,\right\}$,
+ou seja, 
+\[
+  \min \left\{\frac{2/3}{1/9}, \frac{13/3}{11/9}\right\}  
+  =
+  \frac{13/3}{11/9}
+  = 
+  \frac{39}{11},
+\]
+implica que $ x_4 $ sai da base e $ x_5 $ entra.
+
+\newpage
+
+\begin{table}[!htbp]
+  \centering
+  \begin{tabular}{c|cccccc|c}
+    Max       & $x_1$ & $x_2$ & $x_3$ & $x_4$  & $x_5$ & $z$ &         \\ \hline
+    Var. Bás. & 0     & 0     & -7/11 & -17/11 & 0     & -1  & -169/11 \\ \hline
+    $x_2$     & 0     & 1     & -3/11 & -1/11  & 0     &  0  & 3/11    \\
+    $x_5$     & 0     & 0     &  5/11 &  9/11  & 1     &  0  & 39/11   \\
+    $x_1$     & 1     & 0     &  4/11 &  5/11  & 0     &  0  & 40/11
+  \end{tabular}
+\end{table}
+
+O quadro atual é ótimo, isto é, a solução básica atual é ótima e única, pois 
+todos os $ \widehat{c}_j < 0 $, isto é, $ \widehat{c}_3  = -7/11 $ e 
+$ \widehat{c}_4 = -17/11 $.
+
+\begin{itemize}
+  \item Variávis Básicas: $ x_2 = \frac{3}{11}, x_5 = \frac{39}{11} $;
+  \item Variáveis não Básicas: $ x_3 = x_4 = 0 $;
+  \item Valor ótimo de $z$: $ z = \frac{169}{11}$
+\end{itemize}
+
+A solução básica na forma de vetor é 
+\[
+  \begin{bmatrix}
+    40/11\\ 3/11 \\ 0 \\ 0 \\ 39/11
+  \end{bmatrix}
+\]
